@@ -82,7 +82,7 @@ public class PersonaServices(IConfiguration configuration)
 
         using var conexion = CreateConnection();
 
-        int filasAfectadas = await conexion.ExecuteAsync(query, new { Id = id });
+        int filasAfectadas = await conexion.ExecuteAsync(query, new { IdAutor = id });
         return filasAfectadas > 0 ? new PersonaRecordGet
         {
             IdAutor = id
@@ -91,16 +91,15 @@ public class PersonaServices(IConfiguration configuration)
     public async Task<PersonaRecordGet?> GetByIdAsync(int id)
     {
         const string query = @"
-            SELECT Id, Nombre, Nacionalidad, FechaNacimiento, Sueldo
+            SELECT Id AS IdAutor, Nombre, Nacionalidad, FechaNacimiento, Sueldo
             FROM Personas WHERE id = @Id";
-
         using var conexion = CreateConnection();
         return await conexion.QueryFirstOrDefaultAsync<PersonaRecordGet>(query, new { Id = id });
     }
 
     public async Task<IEnumerable<PersonaRecordGet>> GetListAsync()
     {
-        const string query = "SELECT Id, Nombre, Nacionalidad, FechaNacimiento, Sueldo FROM Personas";
+        const string query = "SELECT Id AS IdAutor, Nombre, Nacionalidad, FechaNacimiento, Sueldo FROM Personas";
 
         using var conexion = CreateConnection();
         return await conexion.QueryAsync<PersonaRecordGet>(query);
