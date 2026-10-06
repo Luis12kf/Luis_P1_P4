@@ -53,12 +53,12 @@ public class PersonaServices(IConfiguration configuration)
                 Nacionalidad = @Nacionalidad,
                 FechaNacimiento = @FechaNacimiento,
                 Sueldo = @Sueldo
-            WHERE Id = @Id";
+            WHERE id = @Id";
 
         using var conexion = CreateConnection();
 
         int filasAfectadas = await conexion.ExecuteAsync(query, new {
-            IdAutor = id,
+            Id = id,
             Nombre = persona.Nombre,
             Nacionalidad = persona.Nacionalidad,
             FechaNacimiento = persona.FechaNacimiento,
@@ -78,11 +78,11 @@ public class PersonaServices(IConfiguration configuration)
     {
         const string query = @"
             DELETE FROM Personas
-            WHERE Id = @Id";
+            WHERE id = @Id";
 
         using var conexion = CreateConnection();
 
-        int filasAfectadas = await conexion.ExecuteAsync(query, new { IdAutor = id });
+        int filasAfectadas = await conexion.ExecuteAsync(query, new { Id = id });
         return filasAfectadas > 0 ? new PersonaRecordGet
         {
             IdAutor = id
@@ -92,10 +92,10 @@ public class PersonaServices(IConfiguration configuration)
     {
         const string query = @"
             SELECT Id, Nombre, Nacionalidad, FechaNacimiento, Sueldo
-            FROM Personas WHERE Id = @Id";
+            FROM Personas WHERE id = @Id";
 
         using var conexion = CreateConnection();
-        return await conexion.QueryFirstOrDefaultAsync<PersonaRecordGet>(query, new { IdAutor = id });
+        return await conexion.QueryFirstOrDefaultAsync<PersonaRecordGet>(query, new { Id = id });
     }
 
     public async Task<IEnumerable<PersonaRecordGet>> GetListAsync()

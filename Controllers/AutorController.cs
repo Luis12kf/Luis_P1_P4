@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CSharp.RuntimeBinder;
 using Luis_P1_P4.Services;
 using Luis_P1_P4.Models;
-//using SqlitePCL;
+using SQLitePCL;
 
 namespace Luis_P1_P4.Controllers;
 
@@ -16,12 +17,16 @@ public class AutorController : ControllerBase
         _personaServices = personaServices;
     }
 
-    [HttpPost("create")]
-    public async Task<IActionResult> CreatePersona([FromBody] PersonaRecordSet persona)
+    [HttpPost("{nombre},{nacionalidad},{FechaNacimiento},{Sueldo}")]
+    public async Task<IActionResult> CreatePersona( [FromRoute] string nombre,
+    [FromRoute] string nacionalidad,
+    [FromRoute] string FechaNacimiento,
+    [FromRoute] int Sueldo)
     {
         try
         {
-            bool success = await _personaServices.SaveAsync(persona);
+            var record = new PersonaRecordSet(nombre, nacionalidad, FechaNacimiento, Sueldo);
+            bool success = await _personaServices.SaveAsync(record);
             if (!success)
             {
                 return StatusCode(500, new { message = "Error al guardar en la base de datos." });
@@ -36,12 +41,16 @@ public class AutorController : ControllerBase
         }
     }
 
-    [HttpPut("update/{id}")]
-    public async Task<IActionResult> UpdatePersona([FromRoute] int id, [FromBody] PersonaRecordSet persona)
+    [HttpPut("update/, {id},{nombre},{nacionalidad},{FechaNacimiento},{Sueldo}")]
+    public async Task<IActionResult> UpdatePersona([FromRoute] int id,  [FromRoute] string nombre,
+    [FromRoute] string nacionalidad,
+    [FromRoute] string FechaNacimiento,
+    [FromRoute] int Sueldo )
     {
         try
         {
-            var actualizado = await _personaServices.UpdateAsync(id, persona);
+            var record = new PersonaRecordSet(nombre, nacionalidad, FechaNacimiento, Sueldo);
+            var actualizado = await _personaServices.UpdateAsync(id, record);
 
             if (actualizado == null)
             {
@@ -56,7 +65,7 @@ public class AutorController : ControllerBase
             return StatusCode(500, new { message = "Error interno del servidor.", detalle = ex.Message });
         }
     }
-    [HttpDelete("{id}")]
+    [HttpDelete("Delete,{id}")]
     public async Task<IActionResult> DeletePersona([FromRoute] int id)
     {
         try
@@ -77,7 +86,7 @@ public class AutorController : ControllerBase
         }
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("BuscarId/{id}")]
     public async Task<IActionResult> GetPersona([FromRoute] int id)
     {
         try
@@ -94,6 +103,20 @@ public class AutorController : ControllerBase
         catch (Exception ex)
         {
             // Captura cualquier falla real (conexión BD, tabla inexistente, error de Dapper, etc.)
+            return StatusCode(500, new { message = "Error interno del servidor.", detalle = ex.Message });
+        }
+    }
+
+    [HttpGet("list/get")]
+    public async Task<IActionResult> GetListAsync()
+    {
+        try
+        {
+            var personas = await _personaServices.GetListAsync();
+            return Ok(personas);
+        }
+        catch (Exception ex)
+        {
             return StatusCode(500, new { message = "Error interno del servidor.", detalle = ex.Message });
         }
     }
