@@ -18,15 +18,12 @@ public class AutorController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreatePersona( [FromRoute] string nombre,
-    [FromRoute] string nacionalidad,
-    [FromRoute] string FechaNacimiento,
-    [FromRoute] int Sueldo)
+    public async Task<IActionResult> CreatePersona( [FromBody] AutorRecordSet persona)
     {
         try
         {
-            var record = new AutorRecordSet(nombre, nacionalidad, FechaNacimiento, Sueldo);
-            bool success = await _personaServices.SaveAsync(record);
+        
+            bool success = await _personaServices.SaveAsync(persona);
             if (!success)
             {
                 return StatusCode(500, new { message = "Error al guardar en la base de datos." });
@@ -40,13 +37,12 @@ public class AutorController : ControllerBase
             return StatusCode(500, new { message = "Error interno del servidor.", detalle = ex.Message });
         }
     }
-//
+
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdatePersona([FromRoute] int id, [FromBody] AutorRecordSet persona )
     {
         try
         {
-            
             var actualizado = await _personaServices.UpdateAsync(id, persona);
 
             if (actualizado == null)

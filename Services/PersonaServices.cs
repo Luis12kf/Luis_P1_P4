@@ -67,10 +67,10 @@ public class PersonaServices(IConfiguration configuration)
 
         return filasAfectadas > 0 ? new AutorRecordGet
         {
-            IdAutor = id,
-            Nombre = persona.Nombre,
-            Nacionalidad = persona.Nacionalidad,
-            FechaNacimiento = persona.FechaNacimiento,
+            idAutor = id,
+            Nombre = persona.Nombre ?? string.Empty,
+            Nacionalidad = persona.Nacionalidad ?? string.Empty,
+            FechaNacimiento = persona.FechaNacimiento ?? string.Empty,
             Sueldo = persona.Sueldo
         } : null;
     }
@@ -85,7 +85,7 @@ public class PersonaServices(IConfiguration configuration)
         int filasAfectadas = await conexion.ExecuteAsync(query, new { IdAutor = id });
         return filasAfectadas > 0 ? new AutorRecordGet
         {
-            IdAutor = id
+            idAutor = id
         } : null;
     }
     public async Task<AutorRecordGet?> GetByIdAsync(int id)
@@ -99,7 +99,7 @@ public class PersonaServices(IConfiguration configuration)
 
     public async Task<IEnumerable<AutorRecordGet>> GetListAsync()
     {
-        const string query = "SELECT Id AS IdAutor, Nombre, Nacionalidad, FechaNacimiento, Sueldo FROM Personas";
+        const string query = "SELECT Id AS idAutor, Nombre, Nacionalidad, FechaNacimiento, Sueldo FROM Personas";
 
         using var conexion = CreateConnection();
         return await conexion.QueryAsync<AutorRecordGet>(query);
