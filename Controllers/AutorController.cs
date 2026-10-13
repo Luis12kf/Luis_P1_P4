@@ -17,7 +17,7 @@ public class AutorController : ControllerBase
         _personaServices = personaServices;
     }
 
-    [HttpPost("{nombre},{nacionalidad},{FechaNacimiento},{Sueldo}")]
+    [HttpPost]
     public async Task<IActionResult> CreatePersona( [FromRoute] string nombre,
     [FromRoute] string nacionalidad,
     [FromRoute] string FechaNacimiento,
@@ -41,7 +41,7 @@ public class AutorController : ControllerBase
         }
     }
 
-    [HttpPut("update/, {id},{nombre},{nacionalidad},{FechaNacimiento},{Sueldo}")]
+    [HttpPut("{id},{nombre},{nacionalidad},{FechaNacimiento},{Sueldo}")]
     public async Task<IActionResult> UpdatePersona([FromRoute] int id,  [FromRoute] string nombre,
     [FromRoute] string nacionalidad,
     [FromRoute] string FechaNacimiento,
@@ -65,7 +65,7 @@ public class AutorController : ControllerBase
             return StatusCode(500, new { message = "Error interno del servidor.", detalle = ex.Message });
         }
     }
-    [HttpDelete("Delete,{id}")]
+    [HttpDelete("{id}")]
     public async Task<IActionResult> DeletePersona([FromRoute] int id)
     {
         try
@@ -86,7 +86,7 @@ public class AutorController : ControllerBase
         }
     }
 
-    [HttpGet("BuscarId/{id}")]
+    [HttpGet("{id}")]
     public async Task<IActionResult> GetPersona([FromRoute] int id)
     {
         try
@@ -95,7 +95,7 @@ public class AutorController : ControllerBase
 
             if (persona == null)
             {
-                return NotFound(new { message = $"No se encontró el registro con ID {id}." });
+                return NotFound( new { message = $"No se encontró el registro con ID {id}." });
             }
 
             return Ok(persona);
@@ -107,7 +107,7 @@ public class AutorController : ControllerBase
         }
     }
 
-    [HttpGet("list/get")]
+    [HttpGet]
     public async Task<IActionResult> GetListAsync()
     {
         try
