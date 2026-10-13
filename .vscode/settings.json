@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/25540928-4cc2-40f5-8827-a7c134f3096f/resourceGroups/PruebaEstudiante_group/providers/Microsoft.Web/sites/LuisP1P4",
+    "appService.deploySubpath": "publish"
+}

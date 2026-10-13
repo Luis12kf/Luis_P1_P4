@@ -25,7 +25,7 @@ public class AutorController : ControllerBase
     {
         try
         {
-            var record = new PersonaRecordSet(nombre, nacionalidad, FechaNacimiento, Sueldo);
+            var record = new AutorRecordSet(nombre, nacionalidad, FechaNacimiento, Sueldo);
             bool success = await _personaServices.SaveAsync(record);
             if (!success)
             {
@@ -40,17 +40,14 @@ public class AutorController : ControllerBase
             return StatusCode(500, new { message = "Error interno del servidor.", detalle = ex.Message });
         }
     }
-
-    [HttpPut("{id},{nombre},{nacionalidad},{FechaNacimiento},{Sueldo}")]
-    public async Task<IActionResult> UpdatePersona([FromRoute] int id,  [FromRoute] string nombre,
-    [FromRoute] string nacionalidad,
-    [FromRoute] string FechaNacimiento,
-    [FromRoute] int Sueldo )
+//
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdatePersona([FromRoute] int id, [FromBody] AutorRecordSet persona )
     {
         try
         {
-            var record = new PersonaRecordSet(nombre, nacionalidad, FechaNacimiento, Sueldo);
-            var actualizado = await _personaServices.UpdateAsync(id, record);
+            
+            var actualizado = await _personaServices.UpdateAsync(id, persona);
 
             if (actualizado == null)
             {

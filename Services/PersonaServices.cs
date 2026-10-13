@@ -26,7 +26,7 @@ public class PersonaServices(IConfiguration configuration)
         await conexion.ExecuteAsync(query);
     }
 
-    public async Task<bool> SaveAsync(PersonaRecordSet persona)
+    public async Task<bool> SaveAsync(AutorRecordSet persona)
     {
         const string query = @"INSERT INTO Personas (Nombre, Nacionalidad, FechaNacimiento, Sueldo)
                                VALUES (@Nombre, @Nacionalidad, @FechaNacimiento, @Sueldo)";
@@ -45,14 +45,14 @@ public class PersonaServices(IConfiguration configuration)
         return filasAfectadas > 0;
     }
 
-    public async Task<PersonaRecordGet?> UpdateAsync(int id, PersonaRecordSet persona)
+    public async Task<AutorRecordGet?> UpdateAsync(int id, AutorRecordSet persona)
     {
         const string query = @"
             UPDATE Personas
-            SET Nombre = @Nombre,
-                Nacionalidad = @Nacionalidad,
-                FechaNacimiento = @FechaNacimiento,
-                Sueldo = @Sueldo
+            SET Nombre = COALESCE(@Nombre, Nombre),
+                Nacionalidad =   COALESCE(@Nacionalidad, Nacionalidad) ,
+                FechaNacimiento =  COALESCE(@FechaNacimiento, FechaNacimiento),
+                Sueldo =  COALESCE(@Sueldo, Sueldo)
             WHERE id = @Id";
 
         using var conexion = CreateConnection();
@@ -65,7 +65,7 @@ public class PersonaServices(IConfiguration configuration)
             Sueldo = persona.Sueldo
         });
 
-        return filasAfectadas > 0 ? new PersonaRecordGet
+        return filasAfectadas > 0 ? new AutorRecordGet
         {
             IdAutor = id,
             Nombre = persona.Nombre,
@@ -74,7 +74,7 @@ public class PersonaServices(IConfiguration configuration)
             Sueldo = persona.Sueldo
         } : null;
     }
-    public async Task<PersonaRecordGet?> DeleteAsync(int id)
+    public async Task<AutorRecordGet?> DeleteAsync(int id)
     {
         const string query = @"
             DELETE FROM Personas
@@ -83,25 +83,25 @@ public class PersonaServices(IConfiguration configuration)
         using var conexion = CreateConnection();
 
         int filasAfectadas = await conexion.ExecuteAsync(query, new { IdAutor = id });
-        return filasAfectadas > 0 ? new PersonaRecordGet
+        return filasAfectadas > 0 ? new AutorRecordGet
         {
             IdAutor = id
         } : null;
     }
-    public async Task<PersonaRecordGet?> GetByIdAsync(int id)
+    public async Task<AutorRecordGet?> GetByIdAsync(int id)
     {
         const string query = @"
             SELECT Id AS IdAutor, Nombre, Nacionalidad, FechaNacimiento, Sueldo
             FROM Personas WHERE id = @Id";
         using var conexion = CreateConnection();
-        return await conexion.QueryFirstOrDefaultAsync<PersonaRecordGet>(query, new { Id = id });
+        return await conexion.QueryFirstOrDefaultAsync<AutorRecordGet>(query, new { Id = id });
     }
 
-    public async Task<IEnumerable<PersonaRecordGet>> GetListAsync()
+    public async Task<IEnumerable<AutorRecordGet>> GetListAsync()
     {
         const string query = "SELECT Id AS IdAutor, Nombre, Nacionalidad, FechaNacimiento, Sueldo FROM Personas";
 
         using var conexion = CreateConnection();
-        return await conexion.QueryAsync<PersonaRecordGet>(query);
+        return await conexion.QueryAsync<AutorRecordGet>(query);
     }
 }
